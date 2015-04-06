@@ -15,17 +15,20 @@
 
 #include "ofMain.h"
 
+#include "ofxHistoryPlot.h"
+
 
 class ARtest {
 
 public: // con-/destructors
     ARtest();
-    // ~ARtest(){}
+    ~ARtest();
 
 public: // methods
     void setupParams();
     void updateParams();
     void setup();
+    void destroy();
     void update(float dt);
     void draw();
     void drawRestoring();
@@ -51,6 +54,8 @@ protected: // attributes
     /* The four corners of the image */
     vector<ofPoint> displayImageCorners;
     bool bEnabled, bMirror;
+
+    ofxHistoryPlot *plot1, *plot2, *plot3;
 };
 
 #endif /* defined(__BaseApp__ARtest__) */

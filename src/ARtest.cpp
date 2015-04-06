@@ -19,9 +19,12 @@ ARtest::ARtest(){
     threshold = -1;
     bEnabled = true;
     bMirror = true;
+    plot1 = plot2 = plot3 =NULL;
 }
 
-// ARtest::~ARtest(){}
+ARtest::~ARtest(){
+    destroy();
+}
 
 void ARtest::setupParams(){
     RUI_NEW_GROUP("ARtest");
@@ -73,7 +76,21 @@ void ARtest::setup(){
     // We also do it in OpenCV so we can see what it looks like for debugging
     artk.setThreshold(threshold);
    
-    // ofBackground(127,127,127);
+    plot1 = new ofxHistoryPlot(NULL, "dbg", 400, false);
+    plot1->setAutoRangeShrinksBack(true);
+    plot2 = new ofxHistoryPlot(NULL, "dbg", 400, false);
+    plot2->setAutoRangeShrinksBack(true);
+    plot3 = new ofxHistoryPlot(NULL, "dbg", 400, false);
+    plot3->setAutoRangeShrinksBack(true);
+
+}
+
+void ARtest::destroy(){
+    #define DELPLOT(x) if(x){ delete x; x = NULL; }
+    DELPLOT(plot1);
+    DELPLOT(plot2);
+    DELPLOT(plot3);
+    #undef DELPLOT
 }
 
 void ARtest::update(float dt){
@@ -97,10 +114,12 @@ void ARtest::update(float dt){
     grayThres = grayImage;
     grayThres.threshold(threshold);
     TS_STOP("conversion");
+
     TS_START("artk U");
     // Pass in the new image pixels to artk
     artk.update(grayImage.getPixels());
     TS_STOP("artk U");
+    
     TS_STOP("artest U");
 }
 
@@ -145,6 +164,7 @@ void ARtest::draw(){
         // Homography
         // Here we feed in the corners of an image and get back a homography matrix
         ofMatrix4x4 homo = artk.getHomography(idx, displayImageCorners);
+        
         // We apply the matrix and then can draw the image distorted on to the marker
         ofPushMatrix();
         glMultMatrixf(homo.getPtr());
@@ -154,6 +174,21 @@ void ARtest::draw(){
         ofPopMatrix();
     }
   
+    if(numDetected > 0){
+        ofVec3f pos = artk.getCameraPosition(0);
+        plot1->update(pos.x);
+        plot2->update(pos.y);
+        plot3->update(pos.z);
+        // LOG << "cam pos: " << pos;
+    } else {
+        plot1->update(0.0);
+        plot2->update(0.0);
+        plot3->update(0.0);
+    }
+
+    plot1->draw(0, height, width, 120);
+    plot2->draw(0, height+120, width, 120);
+    plot3->draw(0, height+240, width, 120);
         
     // ARTK 3D stuff
     // This is another way of drawing objects aligned with the marker

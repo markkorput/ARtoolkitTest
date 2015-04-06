@@ -23,7 +23,7 @@ void ruiServerCallback(RemoteUIServerCallBackArg arg){
 void ofApp::setup(){
     ofLogToFile("log.txt", true);
     //ofSetLogLevel(OF_LOG_VERBOSE);
-    ofSetWindowShape(1280, 720);
+    ofSetWindowShape(1280, 900);
 
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
