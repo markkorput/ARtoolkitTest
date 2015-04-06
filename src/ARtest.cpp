@@ -31,6 +31,8 @@ void ARtest::setupParams(){
     RUI_DEFINE_VAR_WV(bool, "artest-enabled", true);
     RUI_DEFINE_VAR_WV(int, "artest-treshold", 85, 0, 255);
     RUI_DEFINE_VAR_WV(bool, "artest-mirror", true);
+    RUI_DEFINE_VAR_WV(float, "artest-cursor-accuracy", 0.001, 0.0001, 1.);
+    RUI_DEFINE_VAR_WV(int, "artest-cursor-max", 5, 0, 1000);
 }
 
 void ARtest::updateParams(){
@@ -51,13 +53,6 @@ void ARtest::setup(){
     grayImage.allocate(width, height);
     grayThres.allocate(width, height);
 
-    // Load the image we are going to distort
-    displayImage.loadImage("of.jpg");
-    // Load the corners of the image into the vector
-    displayImageCorners.push_back(ofPoint(0, 0));
-    displayImageCorners.push_back(ofPoint(displayImage.width, 0));
-    displayImageCorners.push_back(ofPoint(displayImage.width, displayImage.height));
-    displayImageCorners.push_back(ofPoint(0, displayImage.height));
     
     // This uses the default camera calibration and marker file
     artk.setup(width, height);
@@ -83,6 +78,20 @@ void ARtest::setup(){
     plot3 = new ofxHistoryPlot(NULL, "dbg", 400, false);
     plot3->setAutoRangeShrinksBack(true);
 
+    for(int i=0; i<5; i++){
+        ofImage* img = new ofImage();
+        img->loadImage("portrets/"+ofToString(i+1, 0, 2, '0')+".jpg");
+        img->resize(150, 150);
+        portrets.push_back(img);
+    }
+
+    // Load the corners of the image into the vector
+    displayImageCorners.push_back(ofPoint(0, 0));
+    displayImageCorners.push_back(ofPoint(150, 0));
+    displayImageCorners.push_back(ofPoint(150, 150));
+    displayImageCorners.push_back(ofPoint(0, 150));
+
+    updateParams();
 }
 
 void ARtest::destroy(){
@@ -119,7 +128,22 @@ void ARtest::update(float dt){
     // Pass in the new image pixels to artk
     artk.update(grayImage.getPixels());
     TS_STOP("artk U");
-    
+
+    if(artk.getNumDetectedMarkers() > 0){
+        ofVec3f pos = artk.getCameraPosition(0);
+        plot1->update(pos.x);
+        plot2->update(pos.y);
+        float val = pos.x * RUI_VAR(float, "artest-cursor-accuracy");
+        int curval = (int)val % RUI_VAR(int, "artest-cursor-max");
+        cursor.set(curval);
+        plot3->update(cursor.get()); //pos.z);
+        // LOG << "cam pos: " << pos;
+    } else {
+        plot1->update(0.0);
+        plot2->update(0.0);
+        plot3->update(0.0);
+    }
+
     TS_STOP("artest U");
 }
 
@@ -128,6 +152,10 @@ void ARtest::draw(){
         return;
     
     TS_START("artest D");
+
+    ofImage* currentPortret = portrets[cursor.get() % portrets.size()];
+    ofSetColor(255);
+    currentPortret->draw(width, height);
 
     // Main image
     ofSetHexColor(0xffffff);
@@ -164,32 +192,20 @@ void ARtest::draw(){
         // Homography
         // Here we feed in the corners of an image and get back a homography matrix
         ofMatrix4x4 homo = artk.getHomography(idx, displayImageCorners);
-        
+
         // We apply the matrix and then can draw the image distorted on to the marker
         ofPushMatrix();
         glMultMatrixf(homo.getPtr());
         // ofSetHexColor(0xffffff);
         ofSetColor(255,255,255,100);
-        displayImage.draw(0, 0);
+        currentPortret->draw(0, 0);
         ofPopMatrix();
-    }
-  
-    if(numDetected > 0){
-        ofVec3f pos = artk.getCameraPosition(0);
-        plot1->update(pos.x);
-        plot2->update(pos.y);
-        plot3->update(pos.z);
-        // LOG << "cam pos: " << pos;
-    } else {
-        plot1->update(0.0);
-        plot2->update(0.0);
-        plot3->update(0.0);
     }
 
     plot1->draw(0, height, width, 120);
     plot2->draw(0, height+120, width, 120);
     plot3->draw(0, height+240, width, 120);
-        
+
     // ARTK 3D stuff
     // This is another way of drawing objects aligned with the marker
     // First apply the projection matrix once

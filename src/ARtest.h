@@ -16,7 +16,7 @@
 #include "ofMain.h"
 
 #include "ofxHistoryPlot.h"
-
+#include "sattribute.h"
 
 class ARtest {
 
@@ -48,14 +48,14 @@ protected: // attributes
     ofxCvColorImage colorImage;
     ofxCvGrayscaleImage grayImage;
     ofxCvGrayscaleImage	grayThres;
-    
-    /* Image to distort on to the marker */
-    ofImage displayImage;
+
     /* The four corners of the image */
     vector<ofPoint> displayImageCorners;
     bool bEnabled, bMirror;
 
     ofxHistoryPlot *plot1, *plot2, *plot3;
+    Sattribute<int> cursor;
+    vector<ofImage*> portrets;
 };
 
 #endif /* defined(__BaseApp__ARtest__) */

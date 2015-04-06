@@ -32,6 +32,7 @@
 		4D3096E11A62038100B27E84 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3096DD1A62038100B27E84 /* tinyxmlparser.cpp */; };
 		4D3096E81A6207F500B27E84 /* NetworkingUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3096E61A6207F500B27E84 /* NetworkingUtils.cpp */; };
 		4D3096E91A6207F500B27E84 /* UdpSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3096E71A6207F500B27E84 /* UdpSocket.cpp */; };
+		4D7C06821AD337DF006C7F1A /* sprocess.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7C06801AD337DF006C7F1A /* sprocess.cpp */; };
 		4DFEC9841AD2C60D002256AA /* ARtest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DFEC9821AD2C60D002256AA /* ARtest.cpp */; };
 		4DFEC9AB1AD2C786002256AA /* ofxARToolkitPlus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DFEC9871AD2C786002256AA /* ofxARToolkitPlus.cpp */; };
 		4DFEC9AC1AD2C786002256AA /* libARToolKitPlus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DFEC9A71AD2C786002256AA /* libARToolKitPlus.a */; };
@@ -158,6 +159,9 @@
 		4D3096DD1A62038100B27E84 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		4D3096E61A6207F500B27E84 /* NetworkingUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NetworkingUtils.cpp; sourceTree = "<group>"; };
 		4D3096E71A6207F500B27E84 /* UdpSocket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UdpSocket.cpp; sourceTree = "<group>"; };
+		4D7C067F1AD337DF006C7F1A /* sattribute.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sattribute.h; sourceTree = "<group>"; };
+		4D7C06801AD337DF006C7F1A /* sprocess.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = sprocess.cpp; sourceTree = "<group>"; };
+		4D7C06811AD337DF006C7F1A /* sprocess.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sprocess.h; sourceTree = "<group>"; };
 		4DFEC9821AD2C60D002256AA /* ARtest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ARtest.cpp; sourceTree = "<group>"; };
 		4DFEC9831AD2C60D002256AA /* ARtest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARtest.h; sourceTree = "<group>"; };
 		4DFEC9871AD2C786002256AA /* ofxARToolkitPlus.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxARToolkitPlus.cpp; sourceTree = "<group>"; };
@@ -559,6 +563,25 @@
 			path = posix;
 			sourceTree = "<group>";
 		};
+		4D7C067D1AD337DF006C7F1A /* ofxSemanticals */ = {
+			isa = PBXGroup;
+			children = (
+				4D7C067E1AD337DF006C7F1A /* src */,
+			);
+			name = ofxSemanticals;
+			sourceTree = "<group>";
+		};
+		4D7C067E1AD337DF006C7F1A /* src */ = {
+			isa = PBXGroup;
+			children = (
+				4D7C067F1AD337DF006C7F1A /* sattribute.h */,
+				4D7C06801AD337DF006C7F1A /* sprocess.cpp */,
+				4D7C06811AD337DF006C7F1A /* sprocess.h */,
+			);
+			name = src;
+			path = ../../ExternalAddons/ofxSemanticals/src;
+			sourceTree = "<group>";
+		};
 		4DFEC9851AD2C786002256AA /* ofxARtoolkitPlus */ = {
 			isa = PBXGroup;
 			children = (
@@ -938,6 +961,7 @@
 				4D30967B1A62031600B27E84 /* ofxRemoteUI */,
 				4DFEC9851AD2C786002256AA /* ofxARtoolkitPlus */,
 				4DFEC9AD1AD2D184002256AA /* ofxOpenCv */,
+				4D7C067D1AD337DF006C7F1A /* ofxSemanticals */,
 			);
 			name = addons;
 			sourceTree = "<group>";
@@ -1131,6 +1155,7 @@
 				4D0194561A62E5080077EBEF /* ofxHistoryPlot.cpp in Sources */,
 				4D3096CD1A62036B00B27E84 /* ofxOscParameterSync.cpp in Sources */,
 				4D3096CF1A62036B00B27E84 /* ofxOscSender.cpp in Sources */,
+				4D7C06821AD337DF006C7F1A /* sprocess.cpp in Sources */,
 				4D3096E91A6207F500B27E84 /* UdpSocket.cpp in Sources */,
 				4D30968C1A62031600B27E84 /* ofxRemoteUI.cpp in Sources */,
 				4D30968E1A62031600B27E84 /* ofxRemoteUINeigbors.cpp in Sources */,
