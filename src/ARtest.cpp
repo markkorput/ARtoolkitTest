@@ -51,8 +51,6 @@ void ARtest::setup(){
     // Load the image we are going to distort
     displayImage.loadImage("of.jpg");
     // Load the corners of the image into the vector
-    int displayImageHalfWidth = displayImage.width / 2;
-    int displayImageHalfHeight = displayImage.height / 2;
     displayImageCorners.push_back(ofPoint(0, 0));
     displayImageCorners.push_back(ofPoint(displayImage.width, 0));
     displayImageCorners.push_back(ofPoint(displayImage.width, displayImage.height));
@@ -129,14 +127,15 @@ void ARtest::draw(){
     // Draws the marker location and id number
     artk.draw(0, 0);
 
+    // Find out how many markers have been detected
+    int numDetected = artk.getNumDetectedMarkers();
+
     // ARTK 2D stuff
-    // See if marker ID '0' was detected
-    // and draw blue corners on that marker only
-    int myIndex = artk.getMarkerIndex(0);
-    if(myIndex >= 0) {
+    // and draw blue corners on each marker
+    for(int idx=0; idx<numDetected; idx++) {
         // Get the corners
         vector<ofPoint> corners;
-        artk.getDetectedMarkerBorderCorners(myIndex, corners);
+        artk.getDetectedMarkerBorderCorners(idx, corners);
         // Can also get the center like this:
         // ofPoint center = artk.getDetectedMarkerCenter(myIndex);
         ofSetHexColor(0x0000ff);
@@ -145,11 +144,12 @@ void ARtest::draw(){
         }
         // Homography
         // Here we feed in the corners of an image and get back a homography matrix
-        ofMatrix4x4 homo = artk.getHomography(myIndex, displayImageCorners);
+        ofMatrix4x4 homo = artk.getHomography(idx, displayImageCorners);
         // We apply the matrix and then can draw the image distorted on to the marker
         ofPushMatrix();
         glMultMatrixf(homo.getPtr());
-        ofSetHexColor(0xffffff);
+        // ofSetHexColor(0xffffff);
+        ofSetColor(255,255,255,100);
         displayImage.draw(0, 0);
         ofPopMatrix();
     }
@@ -160,8 +160,6 @@ void ARtest::draw(){
     // First apply the projection matrix once
     artk.applyProjectionMatrix();
 
-    // Find out how many markers have been detected
-    int numDetected = artk.getNumDetectedMarkers();
     ofEnableAlphaBlending();
     // Draw for each marker discovered
     for(int i=0; i<numDetected; i++) {
