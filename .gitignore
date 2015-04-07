@@ -30,3 +30,5 @@
 bin/data/log.txt
 bin/data/ofxRemoteUISettings.xml
 bin/data/ofxTimeMeasurements.settings
+
+audio/*
