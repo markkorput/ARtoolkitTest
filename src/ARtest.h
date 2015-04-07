@@ -33,6 +33,10 @@ public: // methods
     void draw();
     void drawRestoring();
 
+protected: // methods
+    void registerCallbacks(bool _register = true);
+    void onCursorChanged(Sattribute<int> &attr);
+
 protected: // attributes
     /* Size of the image */
     int width, height;

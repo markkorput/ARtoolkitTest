@@ -12,8 +12,10 @@
 #include "ofxTimeMeasurements.h"
 #include "ofxRemoteUIVars.h"
 
+#include "ofxLiveOsc.h"
 
 ARtest::ARtest(){
+    // default values
     width = 640;
     height = 480;
     threshold = -1;
@@ -33,6 +35,8 @@ void ARtest::setupParams(){
     RUI_DEFINE_VAR_WV(bool, "artest-mirror", true);
     RUI_DEFINE_VAR_WV(float, "artest-cursor-accuracy", 0.001, 0.0001, 1.);
     RUI_DEFINE_VAR_WV(int, "artest-cursor-max", 5, 0, 1000);
+    
+    LIVEOSC.setupParams();
 }
 
 void ARtest::updateParams(){
@@ -56,6 +60,7 @@ void ARtest::setup(){
     
     // This uses the default camera calibration and marker file
     artk.setup(width, height);
+    LIVEOSC.setup();
 
     // The camera calibration file can be created using GML:
     // http://graphics.cs.msu.ru/en/science/research/calibration/cpp
@@ -92,9 +97,14 @@ void ARtest::setup(){
     displayImageCorners.push_back(ofPoint(0, 150));
 
     updateParams();
+    
+    // callbacks
+    registerCallbacks();
 }
 
 void ARtest::destroy(){
+    registerCallbacks(false);
+
     #define DELPLOT(x) if(x){ delete x; x = NULL; }
     DELPLOT(plot1);
     DELPLOT(plot2);
@@ -133,7 +143,7 @@ void ARtest::update(float dt){
         ofVec3f pos = artk.getCameraPosition(0);
         plot1->update(pos.x);
         plot2->update(pos.y);
-        float val = pos.x * RUI_VAR(float, "artest-cursor-accuracy");
+        float val = abs(pos.x) * RUI_VAR(float, "artest-cursor-accuracy");
         int curval = (int)val % RUI_VAR(int, "artest-cursor-max");
         cursor.set(curval);
         plot3->update(cursor.get()); //pos.z);
@@ -252,4 +262,16 @@ void ARtest::drawRestoring(){
 
     glMatrixMode( GL_PROJECTION );
     ofPopView();
+}
+
+void ARtest::registerCallbacks(bool _register){
+    if(_register){
+        ofAddListener(cursor.afterChange, this, &ARtest::onCursorChanged);
+    } else {
+        ofRemoveListener(cursor.afterChange, this, &ARtest::onCursorChanged);
+    }
+}
+
+void ARtest::onCursorChanged(Sattribute<int> &attr){
+    LIVEOSC.playClip(attr.get(), 0);
 }

@@ -23,21 +23,25 @@ ofxLiveOsc::~ofxLiveOsc(){
 }
 
 void ofxLiveOsc::setupParams(){
-    if(bClassParamsCreated) return;
-    bClassParamsCreated = true;
+    if(!bClassParamsCreated){
+        bClassParamsCreated = true;
 
-    LOG_WARNING << "TODO: make sure ofxLiveOsc::setupParams() is executed only once";
-    RUI_NEW_GROUP("ofxLiveOsc");
-    RUI_DEFINE_VAR_WV(string, "ofxLiveOsc::url", "127.0.0.1");
-    RUI_DEFINE_VAR_WV(int, "ofxLiveOsc::port", 9000, 0, 9999);
-    RUI_DEFINE_VAR_WV(string, "ofxLiveOsc::launchClipMsg", "/live/play/clip");
+        LOG_WARNING << "TODO: make sure ofxLiveOsc::setupParams() is executed only once";
+        RUI_NEW_GROUP("ofxLiveOsc");
+        RUI_DEFINE_VAR_WV(string, "ofxLiveOsc::url", "127.0.0.1");
+        RUI_DEFINE_VAR_WV(int, "ofxLiveOsc::port", 9000, 0, 9999);
+        RUI_DEFINE_VAR_WV(string, "ofxLiveOsc::launchClipMsg", "/live/play/clip");
+    }
+
+    // instance-specific param definitions go here
 }
 
 void ofxLiveOsc::updateParams(){
     string newUrl = RUI_VAR(string, "ofxLiveOsc::url");
     int newPort = RUI_VAR(int, "ofxLiveOsc::port");
 
-    // if either the url or the port changed, re-initialize the OSC connection
+    // if either the url or the port changed,
+    // re-initialize the OSC connection
     if(newPort != port || newUrl != url){
         url = newUrl;
         port = newPort;
